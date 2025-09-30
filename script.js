@@ -55,7 +55,7 @@ function updateProgress() {
 
   progressEl.innerHTML = `Total: ✅${totalCorrect} | ❌${totalWrong} 
     <button onclick="toggleDetails()">Show Details</button>
-    <div class="progress-details" id="details" style="display:none;">${details}</div>`;
+    <div class="progress-details" id="details">${details}</div>`;
   localStorage.setItem("progress", JSON.stringify(progress));
 }
 
@@ -157,30 +157,4 @@ function nextCard() {
     showCard();
   } else {
     // Quiz mode behavior
-    current = (current + 1) % deck.length;
-    flipped = false;
-    showCard();
-  }
-}
-
-// --- QUIZ MODE ---
-function checkAnswer() {
-  const answerInput = document.getElementById("answer");
-  const ans = answerInput.value.trim().toLowerCase();
-  const front = deck[current].front;
-  const feedbackEl = document.getElementById("feedback");
-
-  if (ans === deck[current].back.toLowerCase()) {
-    progress[front].correct++;
-    feedbackEl.textContent = "✅ Correct!";
-    feedbackEl.style.color = "green";
-  } else {
-    progress[front].wrong++;
-    feedbackEl.textContent = `❌ Wrong! Correct: ${deck[current].back}`;
-    feedbackEl.style.color = "red";
-  }
-
-  answerInput.value = '';
-  updateProgress();
-  nextCard();
-}
+    current = (
