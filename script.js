@@ -14,6 +14,7 @@ const cards = [
 
 // State
 let deck = [];
+let remainingDeck = [];
 let current = 0;
 let flipped = false;
 let mode = '';
@@ -38,23 +39,32 @@ cardEl.addEventListener("click", () => {
   showCard();
 });
 
-function nextCard() {
-  current = (current + 1) % deck.length;
-  flipped = false;
-  showCard();
+function shuffleDeck(d) {
+  return [...d].sort(() => Math.random() - 0.5);
 }
 
+// --- PROGRESS DISPLAY ---
 function updateProgress() {
-  let totalCorrect = 0, totalWrong = 0, details = '';
+  let totalCorrect = 0, totalWrong = 0;
+  let details = '';
   cards.forEach(c => {
     totalCorrect += progress[c.front].correct;
     totalWrong += progress[c.front].wrong;
     details += `${c.front}: ✅${progress[c.front].correct} ❌${progress[c.front].wrong}\n`;
   });
-  progressEl.textContent = `Total: ✅${totalCorrect} | ❌${totalWrong}\n${details}`;
+
+  progressEl.innerHTML = `Total: ✅${totalCorrect} | ❌${totalWrong} 
+    <button onclick="toggleDetails()">Show Details</button>
+    <div class="progress-details" id="details" style="display:none;">${details}</div>`;
   localStorage.setItem("progress", JSON.stringify(progress));
 }
 
+function toggleDetails() {
+  const detailsDiv = document.getElementById("details");
+  detailsDiv.style.display = detailsDiv.style.display === 'none' ? 'block' : 'none';
+}
+
+// --- MARK CARDS ---
 function markCorrect() {
   const front = deck[current].front;
   progress[front].correct++;
@@ -69,8 +79,10 @@ function markWrong() {
   nextCard();
 }
 
-function shuffleDeck(d) {
-  return [...d].sort(() => Math.random() - 0.5);
+// --- RESET ---
+function resetProgress() {
+  cards.forEach(c => progress[c.front] = { correct: 0, wrong: 0 });
+  updateProgress();
 }
 
 // --- MODES ---
@@ -79,14 +91,16 @@ function startMode(selectedMode) {
   titlePage.style.display = "none";
   appPage.style.display = "block";
 
-  switch(mode) {
+  switch (mode) {
     case 'learn-all':
       deck = shuffleDeck(cards);
+      remainingDeck = [...deck];
       setupFlipControls();
       break;
     case 'learn-hard':
       deck = shuffleDeck(cards.filter(c => progress[c.front].wrong > 0));
-      if(deck.length === 0) deck = shuffleDeck(cards); // fallback
+      if (deck.length === 0) deck = shuffleDeck(cards);
+      remainingDeck = [...deck];
       setupFlipControls();
       break;
     case 'quiz':
@@ -94,6 +108,7 @@ function startMode(selectedMode) {
       setupQuizControls();
       break;
   }
+
   current = 0;
   flipped = false;
   showCard();
@@ -110,7 +125,7 @@ function setupFlipControls() {
   controlsEl.innerHTML = `
     <button onclick="markCorrect()">✅ Correct</button>
     <button onclick="markWrong()">❌ Wrong</button>
-    <button onclick="deck=shuffleDeck(deck); current=0; showCard();">🔀 Shuffle</button>
+    <button onclick="remainingDeck=shuffleDeck(deck); current=0; showCard();">🔀 Shuffle</button>
     <button onclick="resetProgress()">♻️ Reset Progress</button>
   `;
 }
@@ -121,7 +136,31 @@ function setupQuizControls() {
     <button onclick="checkAnswer()">Submit</button>
     <button onclick="deck=shuffleDeck(deck); current=0; showCard();">🔀 Shuffle</button>
     <button onclick="resetProgress()">♻️ Reset Progress</button>
+    <div id="feedback" style="margin-top:10px;font-weight:bold;"></div>
   `;
+}
+
+// --- FLIPCARDS ROUND HANDLING ---
+function nextCard() {
+  if (mode === 'learn-all' || mode === 'learn-hard') {
+    remainingDeck.splice(current, 1); // remove current card
+
+    if (remainingDeck.length === 0) {
+      alert("🎉 Round completed! You have seen all cards.");
+      remainingDeck = [...deck];
+      deck = shuffleDeck(deck);
+      current = 0;
+    } else {
+      current = Math.floor(Math.random() * remainingDeck.length);
+    }
+    flipped = false;
+    showCard();
+  } else {
+    // Quiz mode behavior
+    current = (current + 1) % deck.length;
+    flipped = false;
+    showCard();
+  }
 }
 
 // --- QUIZ MODE ---
@@ -129,18 +168,19 @@ function checkAnswer() {
   const answerInput = document.getElementById("answer");
   const ans = answerInput.value.trim().toLowerCase();
   const front = deck[current].front;
-  if(ans === deck[current].back.toLowerCase()) {
+  const feedbackEl = document.getElementById("feedback");
+
+  if (ans === deck[current].back.toLowerCase()) {
     progress[front].correct++;
+    feedbackEl.textContent = "✅ Correct!";
+    feedbackEl.style.color = "green";
   } else {
     progress[front].wrong++;
+    feedbackEl.textContent = `❌ Wrong! Correct: ${deck[current].back}`;
+    feedbackEl.style.color = "red";
   }
+
   answerInput.value = '';
   updateProgress();
   nextCard();
-}
-
-// --- RESET ---
-function resetProgress() {
-  cards.forEach(c => progress[c.front] = { correct:0, wrong:0 });
-  updateProgress();
 }
