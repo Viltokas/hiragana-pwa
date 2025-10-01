@@ -9,6 +9,7 @@
 </head>
 <body>
 
+<!-- TITLE / MENU PAGE -->
 <div id="title-page">
   <h1>Hiragana Study App</h1>
   <button onclick="startMode('learn-all')">📖 Learn All Characters</button>
@@ -17,17 +18,15 @@
   <button onclick="startMode('picture')">🖼️ Learn with Pictures</button>
 </div>
 
+<!-- APP PAGE -->
 <div id="app" style="display:none;">
   <div id="card" class="card"></div>
   <div class="controls" id="controls"></div>
-  <div class="progress" id="progress"></div>
+  <div class="progress" id="progress-summary"></div>
+  <div id="progress-details" style="display:none; white-space:pre;"></div>
+  <button onclick="toggleDetails()">📊 Show details</button>
   <button onclick="goHome()">🏠 Home</button>
 </div>
-
-<div id="progress-summary"></div>
-<div id="progress-details" style="display:none; white-space:pre;"></div>
-<button onclick="toggleDetails()">📊 Show details</button>
-
 
 <script src="script.js"></script>
 <script>
@@ -37,7 +36,3 @@
 </script>
 </body>
 </html>
-
-
-
-
