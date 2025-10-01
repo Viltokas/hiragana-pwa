@@ -64,14 +64,14 @@ function toggleDetails() {
 
 // --- CARD NAVIGATION ---
 function markCorrect() {
-  const key = deck[current].symbol;
+  const key = deck[current].symbol || deck[current].front;
   progress[key].correct++;
   updateProgress();
   nextCard();
 }
 
 function markWrong() {
-  const key = deck[current].symbol;
+  const key = deck[current].symbol || deck[current].front;
   progress[key].wrong++;
   updateProgress();
   nextCard();
@@ -200,6 +200,7 @@ function checkAnswer() {
     nextCard();
   }, 1000);
 }
+
 
 
 
