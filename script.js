@@ -81,28 +81,12 @@ const appPage = document.getElementById("app");
 function showCard() {
   if (!deck[current]) return;
 
-  if (currentMode === "picture" && flipped) {
-    // Back side: show image
-    card.innerHTML = `<img src="${deck[current].back}" alt="Picture" style="max-width:100%; height:auto;">`;
+  if (mode === "picture" && flipped) {
+    cardEl.innerHTML = `<img src="${deck[current].back}" alt="Picture" style="max-width:100%; height:auto;">`;
   } else {
-    // Normal behavior: either hiragana or romaji
-    card.textContent = flipped ? deck[current].back : deck[current].front;
+    cardEl.textContent = flipped ? deck[current].back : deck[current].front;
   }
 }
-
-function setupPictureControls() {
-  controlsEl.innerHTML = `
-    <div class="row">
-      <button onclick="markCorrect()">✅ Correct</button>
-      <button onclick="markWrong()">❌ Wrong</button>
-    </div>
-    <div class="row">
-      <button onclick="deck = shuffleDeck(deck); current = 0; showCard();">🔀 Shuffle</button>
-      <button onclick="resetProgress()">♻️ Reset</button>
-    </div>
-  `;
-}
-
 
 cardEl.addEventListener("click", () => {
   flipped = !flipped;
@@ -116,7 +100,6 @@ function nextCard() {
 }
 
 let showDetails = false;
-
 function toggleDetails() {
   showDetails = !showDetails;
   document.getElementById("progress-details").style.display = showDetails ? "block" : "none";
@@ -132,18 +115,15 @@ function updateProgress() {
     details += `${c.front}: ✅${progress[c.front].correct} ❌${progress[c.front].wrong}\n`;
   }
 
-  // summary only
   document.getElementById("progress-summary").textContent =
     `Total: ✅${totalCorrect} | ❌${totalWrong}`;
 
-  // details only if toggle is on
   if (showDetails) {
     document.getElementById("progress-details").textContent = details;
   }
 
   localStorage.setItem("progress", JSON.stringify(progress));
 }
-
 
 function markCorrect() {
   const front = deck[current].front;
@@ -195,7 +175,6 @@ function startMode(selectedMode) {
   updateProgress();
 }
 
-
 function goHome() {
   appPage.style.display = "none";
   titlePage.style.display = "block";
@@ -203,6 +182,19 @@ function goHome() {
 
 // --- CONTROL SETUPS ---
 function setupFlipControls() {
+  controlsEl.innerHTML = `
+    <div class="row">
+      <button onclick="markCorrect()">✅ Correct</button>
+      <button onclick="markWrong()">❌ Wrong</button>
+    </div>
+    <div class="row">
+      <button onclick="deck = shuffleDeck(deck); current = 0; showCard();">🔀 Shuffle</button>
+      <button onclick="resetProgress()">♻️ Reset</button>
+    </div>
+  `;
+}
+
+function setupPictureControls() {
   controlsEl.innerHTML = `
     <div class="row">
       <button onclick="markCorrect()">✅ Correct</button>
@@ -229,7 +221,6 @@ function setupQuizControls() {
   `;
 }
 
-
 // --- QUIZ MODE ---
 function checkAnswer() {
   const input = document.getElementById("answer");
@@ -248,39 +239,12 @@ function checkAnswer() {
   }
 
   updateProgress();
-
-  // clear input for next attempt
   input.value = "";
 
-  // move to next card after short delay
   setTimeout(() => {
     feedback.textContent = "";
     nextCard();
   }, 1000);
-}
-
-function startPictureMode() {
-  currentMode = "picture";
-  deck = [...pictureCards];
-  current = 0;
-  flipped = false;
-  document.getElementById("menu").style.display = "none";
-  app.style.display = "block";
-  setupPictureControls();
-  showCard();
-}
-
-function setupPictureControls() {
-  controlsEl.innerHTML = `
-    <div class="row">
-      <button onclick="markCorrect()">✅ Correct</button>
-      <button onclick="markWrong()">❌ Wrong</button>
-    </div>
-    <div class="row">
-      <button onclick="deck = shuffleDeck(deck); current = 0; showCard();">🔀 Shuffle</button>
-      <button onclick="resetProgress()">♻️ Reset</button>
-    </div>
-  `;
 }
 
 // --- RESET ---
@@ -288,11 +252,3 @@ function resetProgress() {
   cards.forEach(c => progress[c.front] = { correct:0, wrong:0 });
   updateProgress();
 }
-
-
-
-
-
-
-
-
