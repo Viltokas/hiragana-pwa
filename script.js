@@ -63,18 +63,19 @@ function toggleDetails() {
 
 // --- CARD NAVIGATION ---
 function markCorrect() {
-  const frontKey = deck[current].back; // visada back
-  progress[frontKey].correct++;
+  const key = deck[current].back; // visada back
+  progress[key].correct++;
   updateProgress();
   nextCard();
 }
 
 function markWrong() {
-  const frontKey = deck[current].back; // visada back
-  progress[frontKey].wrong++;
+  const key = deck[current].back;
+  progress[key].wrong++;
   updateProgress();
   nextCard();
 }
+
 
 function nextCard() {
   current = (current + 1) % deck.length;
@@ -99,21 +100,20 @@ function showCard() {
 // --- CONTROLS ---
 function setupControls() {
   controlsEl.innerHTML = `
-    <div class="row">
-      <button id="correct-btn">✅ Correct</button>
-      <button id="wrong-btn">❌ Wrong</button>
-    </div>
-    <div class="row">
-      <button id="shuffle-btn">🔀 Shuffle</button>
-      <button id="reset-btn">♻️ Reset</button>
-    </div>
+    <button id="correct-btn">✅ Correct</button>
+    <button id="wrong-btn">❌ Wrong</button>
+    <button id="shuffle-btn">🔀 Shuffle</button>
+    <button id="reset-btn">♻️ Reset</button>
   `;
 
   document.getElementById("correct-btn").addEventListener("click", markCorrect);
   document.getElementById("wrong-btn").addEventListener("click", markWrong);
-  document.getElementById("shuffle-btn").addEventListener("click", () => { deck = shuffleDeck(deck); current = 0; showCard(); });
+  document.getElementById("shuffle-btn").addEventListener("click", () => {
+    deck = shuffleDeck(deck); current = 0; showCard();
+  });
   document.getElementById("reset-btn").addEventListener("click", resetProgress);
 }
+
 
 function resetProgress() {
   cards.forEach(c => progress[c.front] = { correct:0, wrong:0 });
@@ -199,4 +199,5 @@ function checkAnswer() {
     nextCard();
   }, 1000);
 }
+
 
