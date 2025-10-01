@@ -12,7 +12,11 @@ const cards = [
   { front: "わ", back: "wa" }, { front: "を", back: "wo" }, { front: "ん", back: "n" }
 ];
 
-const pictureCards = cards.map(c => ({ front: `images/${c.back}.png`, back: c.back }));
+// --- PICTURE CARDS ---
+const pictureCards = cards.map(c => ({
+  front: `images/${c.back}.png`,
+  back: c.back // visada sutampa su progress key
+}));
 
 // --- STATE ---
 let deck = [];
@@ -25,6 +29,7 @@ cards.forEach(c => {
   if (!progress[c.front]) progress[c.front] = { correct: 0, wrong: 0 };
 });
 
+// --- DOM ELEMENTS ---
 const cardEl = document.getElementById("card");
 const controlsEl = document.getElementById("controls");
 const titlePage = document.getElementById("title-page");
@@ -56,15 +61,16 @@ function toggleDetails() {
   updateProgress();
 }
 
+// --- CARD NAVIGATION ---
 function markCorrect() {
-  const frontKey = deck[current].back;
+  const frontKey = deck[current].back || deck[current].front;
   progress[frontKey].correct++;
   updateProgress();
   nextCard();
 }
 
 function markWrong() {
-  const frontKey = deck[current].back;
+  const frontKey = deck[current].back || deck[current].front;
   progress[frontKey].wrong++;
   updateProgress();
   nextCard();
@@ -75,7 +81,7 @@ function nextCard() {
   showCard();
 }
 
-// --- SHOW CARD WITH FLIP ---
+// --- SHOW CARD ---
 function showCard() {
   if(!deck[current]) return;
   let frontContent = (mode === "picture") ? `<img src="${deck[current].front}" alt="Hiragana">` : deck[current].front;
@@ -175,7 +181,7 @@ function checkAnswer() {
   const userAnswer = input.value.trim().toLowerCase();
   const correctAnswer = deck[current].back.toLowerCase();
 
-  const frontKey = deck[current].front;
+  const frontKey = deck[current].back || deck[current].front;
   if (userAnswer === correctAnswer) {
     progress[frontKey].correct++;
     feedback.textContent = "✅ Correct!";
@@ -193,4 +199,3 @@ function checkAnswer() {
     nextCard();
   }, 1000);
 }
-
