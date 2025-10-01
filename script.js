@@ -134,12 +134,18 @@ function startMode(selectedMode) {
       deck = shuffleDeck(cards);
       setupQuizControls();
       break;
+    case 'picture':  // ← NEW CASE
+      deck = shuffleDeck(pictureCards);
+      setupPictureControls();
+      break;
   }
+
   current = 0;
   flipped = false;
   showCard();
   updateProgress();
 }
+
 
 function goHome() {
   appPage.style.display = "none";
@@ -269,6 +275,7 @@ function resetProgress() {
   cards.forEach(c => progress[c.front] = { correct:0, wrong:0 });
   updateProgress();
 }
+
 
 
 
