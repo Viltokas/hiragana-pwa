@@ -44,16 +44,27 @@ function nextCard() {
   showCard();
 }
 
+let showDetails = false;
+
+function toggleDetails() {
+  showDetails = !showDetails;
+  updateProgress();
+}
+
 function updateProgress() {
-  let totalCorrect = 0, totalWrong = 0, details = '';
-  cards.forEach(c => {
+  let totalCorrect = 0, totalWrong = 0;
+  let details = '';
+  for (let c of cards) {
     totalCorrect += progress[c.front].correct;
     totalWrong += progress[c.front].wrong;
-    details += `${c.front}: ✅${progress[c.front].correct} ❌${progress[c.front].wrong}\n`;
-  });
-  progressEl.textContent = `Total: ✅${totalCorrect} | ❌${totalWrong}\n${details}`;
+    if (showDetails) {
+      details += `${c.front}: ✅${progress[c.front].correct} ❌${progress[c.front].wrong}\n`;
+    }
+  }
+  progressDiv.textContent = `Total: ✅${totalCorrect} | ❌${totalWrong}` + (showDetails ? `\n\n${details}` : '');
   localStorage.setItem("progress", JSON.stringify(progress));
 }
+
 
 function markCorrect() {
   const front = deck[current].front;
@@ -144,3 +155,4 @@ function resetProgress() {
   cards.forEach(c => progress[c.front] = { correct:0, wrong:0 });
   updateProgress();
 }
+
