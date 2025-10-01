@@ -48,6 +48,7 @@ let showDetails = false;
 
 function toggleDetails() {
   showDetails = !showDetails;
+  document.getElementById("progress-details").style.display = showDetails ? "block" : "none";
   updateProgress();
 }
 
@@ -57,11 +58,18 @@ function updateProgress() {
   for (let c of cards) {
     totalCorrect += progress[c.front].correct;
     totalWrong += progress[c.front].wrong;
-    if (showDetails) {
-      details += `${c.front}: ✅${progress[c.front].correct} ❌${progress[c.front].wrong}\n`;
-    }
+    details += `${c.front}: ✅${progress[c.front].correct} ❌${progress[c.front].wrong}\n`;
   }
-  progressDiv.textContent = `Total: ✅${totalCorrect} | ❌${totalWrong}` + (showDetails ? `\n\n${details}` : '');
+
+  // summary only
+  document.getElementById("progress-summary").textContent =
+    `Total: ✅${totalCorrect} | ❌${totalWrong}`;
+
+  // details only if toggle is on
+  if (showDetails) {
+    document.getElementById("progress-details").textContent = details;
+  }
+
   localStorage.setItem("progress", JSON.stringify(progress));
 }
 
@@ -155,4 +163,5 @@ function resetProgress() {
   cards.forEach(c => progress[c.front] = { correct:0, wrong:0 });
   updateProgress();
 }
+
 
