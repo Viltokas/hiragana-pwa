@@ -12,6 +12,55 @@ const cards = [
   { front: "わ", back: "wa" }, { front: "を", back: "wo" }, { front: "ん", back: "n" }
 ];
 
+const pictureCards = [
+  { front: "あ", back: "images/a.png" },
+  { front: "い", back: "images/i.png" },
+  { front: "う", back: "images/u.png" },
+  { front: "え", back: "images/e.png" },
+  { front: "お", back: "images/o.png" },
+  { front: "か", back: "images/ka.png" },
+  { front: "き", back: "images/ki.png" },
+  { front: "く", back: "images/ku.png" },
+  { front: "け", back: "images/ke.png" },
+  { front: "こ", back: "images/ko.png" },
+  { front: "さ", back: "images/sa.png" },
+  { front: "し", back: "images/shi.png" },
+  { front: "す", back: "images/su.png" },
+  { front: "せ", back: "images/se.png" },
+  { front: "そ", back: "images/so.png" },
+  { front: "た", back: "images/ta.png" },
+  { front: "ち", back: "images/chi.png" },
+  { front: "つ", back: "images/tsu.png" },
+  { front: "て", back: "images/te.png" },
+  { front: "と", back: "images/to.png" },
+  { front: "な", back: "images/na.png" },
+  { front: "に", back: "images/ni.png" },
+  { front: "ぬ", back: "images/nu.png" },
+  { front: "ね", back: "images/ne.png" },
+  { front: "の", back: "images/no.png" },
+  { front: "は", back: "images/ha.png" },
+  { front: "ひ", back: "images/hi.png" },
+  { front: "ふ", back: "images/fu.png" },
+  { front: "へ", back: "images/he.png" },
+  { front: "ほ", back: "images/ho.png" },
+  { front: "ま", back: "images/ma.png" },
+  { front: "み", back: "images/mi.png" },
+  { front: "む", back: "images/mu.png" },
+  { front: "め", back: "images/me.png" },
+  { front: "も", back: "images/mo.png" },
+  { front: "や", back: "images/ya.png" },
+  { front: "ゆ", back: "images/yu.png" },
+  { front: "よ", back: "images/yo.png" },
+  { front: "ら", back: "images/ra.png" },
+  { front: "り", back: "images/ri.png" },
+  { front: "る", back: "images/ru.png" },
+  { front: "れ", back: "images/re.png" },
+  { front: "ろ", back: "images/ro.png" },
+  { front: "わ", back: "images/wa.png" },
+  { front: "を", back: "images/wo.png" },
+  { front: "ん", back: "images/n.png" }
+];
+
 // State
 let deck = [];
 let current = 0;
@@ -134,7 +183,7 @@ function startMode(selectedMode) {
       deck = shuffleDeck(cards);
       setupQuizControls();
       break;
-    case 'picture':  // ← NEW CASE
+    case 'picture':
       deck = shuffleDeck(pictureCards);
       setupPictureControls();
       break;
@@ -210,55 +259,6 @@ function checkAnswer() {
   }, 1000);
 }
 
-const pictureCards = [
-  { front: "あ", back: "images/a.png" },
-  { front: "い", back: "images/i.png" },
-  { front: "う", back: "images/u.png" },
-  { front: "え", back: "images/e.png" },
-  { front: "お", back: "images/o.png" },
-  { front: "か", back: "images/ka.png" },
-  { front: "き", back: "images/ki.png" },
-  { front: "く", back: "images/ku.png" },
-  { front: "け", back: "images/ke.png" },
-  { front: "こ", back: "images/ko.png" },
-  { front: "さ", back: "images/sa.png" },
-  { front: "し", back: "images/shi.png" },
-  { front: "す", back: "images/su.png" },
-  { front: "せ", back: "images/se.png" },
-  { front: "そ", back: "images/so.png" },
-  { front: "た", back: "images/ta.png" },
-  { front: "ち", back: "images/chi.png" },
-  { front: "つ", back: "images/tsu.png" },
-  { front: "て", back: "images/te.png" },
-  { front: "と", back: "images/to.png" },
-  { front: "な", back: "images/na.png" },
-  { front: "に", back: "images/ni.png" },
-  { front: "ぬ", back: "images/nu.png" },
-  { front: "ね", back: "images/ne.png" },
-  { front: "の", back: "images/no.png" },
-  { front: "は", back: "images/ha.png" },
-  { front: "ひ", back: "images/hi.png" },
-  { front: "ふ", back: "images/fu.png" },
-  { front: "へ", back: "images/he.png" },
-  { front: "ほ", back: "images/ho.png" },
-  { front: "ま", back: "images/ma.png" },
-  { front: "み", back: "images/mi.png" },
-  { front: "む", back: "images/mu.png" },
-  { front: "め", back: "images/me.png" },
-  { front: "も", back: "images/mo.png" },
-  { front: "や", back: "images/ya.png" },
-  { front: "ゆ", back: "images/yu.png" },
-  { front: "よ", back: "images/yo.png" },
-  { front: "ら", back: "images/ra.png" },
-  { front: "り", back: "images/ri.png" },
-  { front: "る", back: "images/ru.png" },
-  { front: "れ", back: "images/re.png" },
-  { front: "ろ", back: "images/ro.png" },
-  { front: "わ", back: "images/wa.png" },
-  { front: "を", back: "images/wo.png" },
-  { front: "ん", back: "images/n.png" }
-];
-
 function startPictureMode() {
   currentMode = "picture";
   deck = [...pictureCards];
@@ -270,11 +270,25 @@ function startPictureMode() {
   showCard();
 }
 
+function setupPictureControls() {
+  controlsEl.innerHTML = `
+    <div class="row">
+      <button onclick="markCorrect()">✅ Correct</button>
+      <button onclick="markWrong()">❌ Wrong</button>
+    </div>
+    <div class="row">
+      <button onclick="deck = shuffleDeck(deck); current = 0; showCard();">🔀 Shuffle</button>
+      <button onclick="resetProgress()">♻️ Reset</button>
+    </div>
+  `;
+}
+
 // --- RESET ---
 function resetProgress() {
   cards.forEach(c => progress[c.front] = { correct:0, wrong:0 });
   updateProgress();
 }
+
 
 
 
