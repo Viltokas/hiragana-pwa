@@ -12,31 +12,14 @@ const cards = [
   { front: "わ", back: "wa" }, { front: "を", back: "wo" }, { front: "ん", back: "n" }
 ];
 
-const pictureCards = [
-  { front: "images/a.png", back: "a" }, { front: "images/i.png", back: "i" }, { front: "images/u.png", back: "u" }, 
-  { front: "images/e.png", back: "e" }, { front: "images/o.png", back: "o" }, 
-  { front: "images/ka.png", back: "ka" }, { front: "images/ki.png", back: "ki" }, { front: "images/ku.png", back: "ku" },
-  { front: "images/ke.png", back: "ke" }, { front: "images/ko.png", back: "ko" }, 
-  { front: "images/sa.png", back: "sa" }, { front: "images/shi.png", back: "shi" }, { front: "images/su.png", back: "su" },
-  { front: "images/se.png", back: "se" }, { front: "images/so.png", back: "so" }, 
-  { front: "images/ta.png", back: "ta" }, { front: "images/chi.png", back: "chi" }, { front: "images/tsu.png", back: "tsu" },
-  { front: "images/te.png", back: "te" }, { front: "images/to.png", back: "to" }, 
-  { front: "images/na.png", back: "na" }, { front: "images/ni.png", back: "ni" }, { front: "images/nu.png", back: "nu" },
-  { front: "images/ne.png", back: "ne" }, { front: "images/no.png", back: "no" }, 
-  { front: "images/ha.png", back: "ha" }, { front: "images/hi.png", back: "hi" }, { front: "images/fu.png", back: "fu" },
-  { front: "images/he.png", back: "he" }, { front: "images/ho.png", back: "ho" }, 
-  { front: "images/ma.png", back: "ma" }, { front: "images/mi.png", back: "mi" }, { front: "images/mu.png", back: "mu" },
-  { front: "images/me.png", back: "me" }, { front: "images/mo.png", back: "mo" }, 
-  { front: "images/ya.png", back: "ya" }, { front: "images/yu.png", back: "yu" }, { front: "images/yo.png", back: "yo" },
-  { front: "images/ra.png", back: "ra" }, { front: "images/ri.png", back: "ri" }, { front: "images/ru.png", back: "ru" },
-  { front: "images/re.png", back: "re" }, { front: "images/ro.png", back: "ro" }, 
-  { front: "images/wa.png", back: "wa" }, { front: "images/wo.png", back: "wo" }, { front: "images/n.png", back: "n" }
-];
+const pictureCards = cards.map(c => ({ front: `images/${c.back}.png`, back: c.back }));
 
 // --- STATE ---
 let deck = [];
 let current = 0;
 let mode = '';
+let showDetails = false;
+
 let progress = JSON.parse(localStorage.getItem("progress")) || {};
 cards.forEach(c => {
   if (!progress[c.front]) progress[c.front] = { correct: 0, wrong: 0 };
@@ -44,11 +27,8 @@ cards.forEach(c => {
 
 const cardEl = document.getElementById("card");
 const controlsEl = document.getElementById("controls");
-const progressEl = document.getElementById("progress");
 const titlePage = document.getElementById("title-page");
 const appPage = document.getElementById("app");
-
-let showDetails = false;
 
 // --- UTILITIES ---
 function shuffleDeck(d) {
@@ -65,27 +45,27 @@ function updateProgress() {
   }
   document.getElementById("progress-summary").textContent =
     `Total: ✅${totalCorrect} | ❌${totalWrong}`;
-  if(showDetails) {
-    document.getElementById("progress-details").textContent = details;
-  }
+  const detailsEl = document.getElementById("progress-details");
+  if(detailsEl) detailsEl.style.display = showDetails ? "block" : "none";
+  if(showDetails && detailsEl) detailsEl.textContent = details;
   localStorage.setItem("progress", JSON.stringify(progress));
 }
 
 function toggleDetails() {
   showDetails = !showDetails;
-  document.getElementById("progress-details").style.display = showDetails ? "block" : "none";
   updateProgress();
 }
 
 function markCorrect() {
-  const front = deck[current].back ? deck[current].back : deck[current].front;
-  progress[deck[current].back || deck[current].front].correct++;
+  const frontKey = deck[current].front;
+  progress[frontKey].correct++;
   updateProgress();
   nextCard();
 }
 
 function markWrong() {
-  progress[deck[current].back || deck[current].front].wrong++;
+  const frontKey = deck[current].front;
+  progress[frontKey].wrong++;
   updateProgress();
   nextCard();
 }
@@ -110,18 +90,23 @@ function showCard() {
   cardEl.onclick = () => cardEl.classList.toggle("flipped");
 }
 
-// --- SETUP CONTROLS ---
+// --- CONTROLS ---
 function setupControls() {
   controlsEl.innerHTML = `
     <div class="row">
-      <button onclick="markCorrect()">✅ Correct</button>
-      <button onclick="markWrong()">❌ Wrong</button>
+      <button id="correct-btn">✅ Correct</button>
+      <button id="wrong-btn">❌ Wrong</button>
     </div>
     <div class="row">
-      <button onclick="deck = shuffleDeck(deck); current = 0; showCard();">🔀 Shuffle</button>
-      <button onclick="resetProgress()">♻️ Reset</button>
+      <button id="shuffle-btn">🔀 Shuffle</button>
+      <button id="reset-btn">♻️ Reset</button>
     </div>
   `;
+
+  document.getElementById("correct-btn").addEventListener("click", markCorrect);
+  document.getElementById("wrong-btn").addEventListener("click", markWrong);
+  document.getElementById("shuffle-btn").addEventListener("click", () => { deck = shuffleDeck(deck); current = 0; showCard(); });
+  document.getElementById("reset-btn").addEventListener("click", resetProgress);
 }
 
 function resetProgress() {
@@ -138,10 +123,12 @@ function startMode(selectedMode) {
   switch(mode) {
     case 'learn-all':
       deck = shuffleDeck(cards);
+      setupControls();
       break;
     case 'learn-hard':
       deck = shuffleDeck(cards.filter(c => progress[c.front].wrong > 0));
       if(deck.length === 0) deck = shuffleDeck(cards);
+      setupControls();
       break;
     case 'quiz':
       deck = shuffleDeck(cards);
@@ -149,11 +136,11 @@ function startMode(selectedMode) {
       break;
     case 'picture':
       deck = shuffleDeck(pictureCards);
+      setupControls();
       break;
   }
 
   current = 0;
-  setupControls();
   showCard();
   updateProgress();
 }
@@ -168,14 +155,18 @@ function setupQuizControls() {
   controlsEl.innerHTML = `
     <div class="row">
       <input type="text" id="answer" placeholder="Type Romaji" />
-      <button onclick="checkAnswer()">Submit</button>
+      <button id="submit-answer">Submit</button>
     </div>
     <div id="feedback" style="text-align:center; margin-top:8px; font-weight:bold;"></div>
     <div class="row">
-      <button onclick="deck = shuffleDeck(deck); current = 0; showCard();">🔀 Shuffle</button>
-      <button onclick="resetProgress()">♻️ Reset</button>
+      <button id="shuffle-btn">🔀 Shuffle</button>
+      <button id="reset-btn">♻️ Reset</button>
     </div>
   `;
+
+  document.getElementById("submit-answer").addEventListener("click", checkAnswer);
+  document.getElementById("shuffle-btn").addEventListener("click", () => { deck = shuffleDeck(deck); current = 0; showCard(); });
+  document.getElementById("reset-btn").addEventListener("click", resetProgress);
 }
 
 function checkAnswer() {
@@ -184,12 +175,13 @@ function checkAnswer() {
   const userAnswer = input.value.trim().toLowerCase();
   const correctAnswer = deck[current].back.toLowerCase();
 
+  const frontKey = deck[current].front;
   if (userAnswer === correctAnswer) {
-    progress[deck[current].front].correct++;
+    progress[frontKey].correct++;
     feedback.textContent = "✅ Correct!";
     feedback.style.color = "green";
   } else {
-    progress[deck[current].front].wrong++;
+    progress[frontKey].wrong++;
     feedback.textContent = `❌ Wrong! Correct: ${correctAnswer}`;
     feedback.style.color = "red";
   }
@@ -201,4 +193,3 @@ function checkAnswer() {
     nextCard();
   }, 1000);
 }
-
