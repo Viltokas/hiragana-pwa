@@ -144,6 +144,7 @@ function setupQuizControls() {
       <input type="text" id="answer" placeholder="Type Romaji" />
       <button onclick="checkAnswer()">Submit</button>
     </div>
+    <div id="feedback" style="text-align:center; margin-top:8px; font-weight:bold;"></div>
     <div class="row">
       <button onclick="deck = shuffleDeck(deck); current = 0; showCard();">🔀 Shuffle</button>
       <button onclick="resetProgress()">♻️ Reset</button>
@@ -172,6 +173,7 @@ function resetProgress() {
   cards.forEach(c => progress[c.front] = { correct:0, wrong:0 });
   updateProgress();
 }
+
 
 
 
