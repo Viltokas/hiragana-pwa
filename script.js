@@ -42,6 +42,8 @@ function shuffleDeck(d) {
 }
 
 function updateProgress() {
+  if(mode === "picture") return; // picture mode neseka progreso
+
   let totalCorrect = 0, totalWrong = 0;
   let details = '';
   for (let c of cards) {
@@ -77,7 +79,6 @@ function markWrong() {
   nextCard();
 }
 
-
 function nextCard() {
   current = (current + 1) % deck.length;
   showCard();
@@ -99,7 +100,7 @@ function showCard() {
 }
 
 // --- CONTROLS ---
-function setupControls() {
+function setupProgressControls() {
   controlsEl.innerHTML = `
     <button id="correct-btn">✅ Correct</button>
     <button id="wrong-btn">❌ Wrong</button>
@@ -115,49 +116,15 @@ function setupControls() {
   document.getElementById("reset-btn").addEventListener("click", resetProgress);
 }
 
-
-function resetProgress() {
-  cards.forEach(c => progress[c.front] = { correct:0, wrong:0 });
-  updateProgress();
+function setupPictureControls() {
+  controlsEl.innerHTML = `
+    <button id="next-btn">➡️ Next</button>
+    <button id="home-btn">🏠 Home</button>
+  `;
+  document.getElementById("next-btn").addEventListener("click", nextCard);
+  document.getElementById("home-btn").addEventListener("click", goHome);
 }
 
-// --- MODES ---
-function startMode(selectedMode) {
-  mode = selectedMode;
-  titlePage.style.display = "none";
-  appPage.style.display = "block";
-
-  switch(mode) {
-    case 'learn-all':
-      deck = shuffleDeck(cards);
-      setupControls();
-      break;
-    case 'learn-hard':
-      deck = shuffleDeck(cards.filter(c => progress[c.front].wrong > 0));
-      if(deck.length === 0) deck = shuffleDeck(cards);
-      setupControls();
-      break;
-    case 'quiz':
-      deck = shuffleDeck(cards);
-      setupQuizControls();
-      break;
-    case 'picture':
-      deck = shuffleDeck(pictureCards);
-      setupControls();
-      break;
-  }
-
-  current = 0;
-  showCard();
-  updateProgress();
-}
-
-function goHome() {
-  appPage.style.display = "none";
-  titlePage.style.display = "block";
-}
-
-// --- QUIZ MODE ---
 function setupQuizControls() {
   controlsEl.innerHTML = `
     <div class="row">
@@ -176,6 +143,51 @@ function setupQuizControls() {
   document.getElementById("reset-btn").addEventListener("click", resetProgress);
 }
 
+// --- RESET PROGRESS ---
+function resetProgress() {
+  cards.forEach(c => progress[c.front] = { correct:0, wrong:0 });
+  updateProgress();
+}
+
+// --- MODES ---
+function startMode(selectedMode) {
+  mode = selectedMode;
+  titlePage.style.display = "none";
+  appPage.style.display = "block";
+
+  current = 0;
+
+  switch(mode) {
+    case 'learn-all':
+      deck = shuffleDeck(cards);
+      setupProgressControls();
+      break;
+    case 'learn-hard':
+      deck = shuffleDeck(cards.filter(c => progress[c.front].wrong > 0));
+      if(deck.length === 0) deck = shuffleDeck(cards);
+      setupProgressControls();
+      break;
+    case 'quiz':
+      deck = shuffleDeck(cards);
+      setupQuizControls();
+      break;
+    case 'picture':
+      deck = shuffleDeck(pictureCards);
+      setupPictureControls();
+      break;
+  }
+
+  showCard();
+  updateProgress();
+}
+
+// --- HOME ---
+function goHome() {
+  appPage.style.display = "none";
+  titlePage.style.display = "block";
+}
+
+// --- QUIZ ---
 function checkAnswer() {
   const input = document.getElementById("answer");
   const feedback = document.getElementById("feedback");
@@ -200,7 +212,3 @@ function checkAnswer() {
     nextCard();
   }, 1000);
 }
-
-
-
-
