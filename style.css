@@ -1,0 +1,45 @@
+body {
+  font-family: sans-serif;
+  text-align: center;
+  background: #f8f9fa;
+  margin: 0;
+  padding: 20px;
+}
+h1 {
+  margin-bottom: 40px;
+}
+button {
+  margin: 10px;
+  padding: 12px 24px;
+  font-size: 1.1rem;
+}
+.card {
+  width: 200px;
+  height: 200px;
+  margin: 20px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 4rem;
+  background: white;
+  border: 2px solid #333;
+  border-radius: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+.controls {
+  margin: 20px 0;
+}
+.progress {
+  white-space: pre-line;
+  margin-top: 20px;
+  font-size: 1rem;
+}
+.progress-details {
+  display: none; /* hide by default */
+  margin-top: 10px;
+  font-size: 0.9rem;
+  white-space: pre-line;
+  max-height: 200px;
+  overflow-y: auto;
+}
