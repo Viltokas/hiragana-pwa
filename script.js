@@ -81,10 +81,12 @@ const appPage = document.getElementById("app");
 function showCard() {
   if (!deck[current]) return;
 
-  let front = deck[current].front;
-  let back = (mode === "picture")
-    ? `<img src="${deck[current].back}" alt="Picture">`
-    : deck[current].back;
+  // Front: paveiksliukas, back: romaji
+  let front = (mode === "picture")
+    ? `<img src="${deck[current].front}" alt="Hiragana">`
+    : deck[current].front;
+
+  let back = deck[current].back;
 
   cardEl.innerHTML = `
     <div class="card-inner">
@@ -93,11 +95,12 @@ function showCard() {
     </div>
   `;
 
-  // flip event
+  // Flip kortelės animacija
   cardEl.onclick = () => {
     cardEl.classList.toggle("flipped");
   };
 }
+
 
 cardEl.addEventListener("click", () => {
   flipped = !flipped;
@@ -263,5 +266,6 @@ function resetProgress() {
   cards.forEach(c => progress[c.front] = { correct:0, wrong:0 });
   updateProgress();
 }
+
 
 
