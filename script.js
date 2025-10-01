@@ -15,7 +15,8 @@ const cards = [
 // --- PICTURE CARDS ---
 const pictureCards = cards.map(c => ({
   front: `images/${c.back}.png`,
-  back: c.back // visada sutampa su progress key
+  back: c.back,
+  symbol: c.front
 }));
 
 // --- STATE ---
@@ -63,14 +64,14 @@ function toggleDetails() {
 
 // --- CARD NAVIGATION ---
 function markCorrect() {
-  const key = deck[current].back; // visada back
+  const key = deck[current].symbol;
   progress[key].correct++;
   updateProgress();
   nextCard();
 }
 
 function markWrong() {
-  const key = deck[current].back;
+  const key = deck[current].symbol;
   progress[key].wrong++;
   updateProgress();
   nextCard();
@@ -199,5 +200,6 @@ function checkAnswer() {
     nextCard();
   }, 1000);
 }
+
 
 
