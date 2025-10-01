@@ -57,14 +57,14 @@ function toggleDetails() {
 }
 
 function markCorrect() {
-  const frontKey = deck[current].front;
+  const frontKey = deck[current].back;
   progress[frontKey].correct++;
   updateProgress();
   nextCard();
 }
 
 function markWrong() {
-  const frontKey = deck[current].front;
+  const frontKey = deck[current].back;
   progress[frontKey].wrong++;
   updateProgress();
   nextCard();
@@ -193,3 +193,4 @@ function checkAnswer() {
     nextCard();
   }, 1000);
 }
+
