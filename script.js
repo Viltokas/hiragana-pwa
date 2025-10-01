@@ -63,14 +63,14 @@ function toggleDetails() {
 
 // --- CARD NAVIGATION ---
 function markCorrect() {
-  const frontKey = deck[current].back || deck[current].front;
+  const frontKey = deck[current].back; // visada back
   progress[frontKey].correct++;
   updateProgress();
   nextCard();
 }
 
 function markWrong() {
-  const frontKey = deck[current].back || deck[current].front;
+  const frontKey = deck[current].back; // visada back
   progress[frontKey].wrong++;
   updateProgress();
   nextCard();
@@ -199,3 +199,4 @@ function checkAnswer() {
     nextCard();
   }, 1000);
 }
+
