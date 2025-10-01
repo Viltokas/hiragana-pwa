@@ -97,22 +97,15 @@ function nextCard() {
 
 // --- SHOW CARD WITH FLIP ---
 function showCard() {
-  if (!deck[current]) return;
-
-  // Front = image (if picture mode), back = romaji
-  let frontContent = (mode === "picture")
-    ? `<img src="${deck[current].front}" alt="Hiragana">`
-    : deck[current].front;
-
+  if(!deck[current]) return;
+  let frontContent = (mode === "picture") ? `<img src="${deck[current].front}" alt="Hiragana">` : deck[current].front;
   let backContent = deck[current].back;
-
   cardEl.innerHTML = `
     <div class="card-inner">
       <div class="card-front">${frontContent}</div>
       <div class="card-back">${backContent}</div>
     </div>
   `;
-
   cardEl.classList.remove("flipped");
   cardEl.onclick = () => cardEl.classList.toggle("flipped");
 }
@@ -208,3 +201,4 @@ function checkAnswer() {
     nextCard();
   }, 1000);
 }
+
