@@ -155,24 +155,40 @@ function setupQuizControls() {
 
 // --- QUIZ MODE ---
 function checkAnswer() {
-  const answerInput = document.getElementById("answer");
-  const ans = answerInput.value.trim().toLowerCase();
-  const front = deck[current].front;
-  if(ans === deck[current].back.toLowerCase()) {
-    progress[front].correct++;
+  const input = document.getElementById("answer");
+  const feedback = document.getElementById("feedback");
+  const userAnswer = input.value.trim().toLowerCase();
+  const correctAnswer = deck[current].back.toLowerCase();
+
+  if (userAnswer === correctAnswer) {
+    progress[deck[current].front].correct++;
+    feedback.textContent = "✅ Correct!";
+    feedback.style.color = "green";
   } else {
-    progress[front].wrong++;
+    progress[deck[current].front].wrong++;
+    feedback.textContent = `❌ Wrong! Correct: ${correctAnswer}`;
+    feedback.style.color = "red";
   }
-  answerInput.value = '';
+
   updateProgress();
-  nextCard();
+
+  // clear input for next attempt
+  input.value = "";
+
+  // move to next card after short delay
+  setTimeout(() => {
+    feedback.textContent = "";
+    nextCard();
+  }, 1000);
 }
+
 
 // --- RESET ---
 function resetProgress() {
   cards.forEach(c => progress[c.front] = { correct:0, wrong:0 });
   updateProgress();
 }
+
 
 
 
