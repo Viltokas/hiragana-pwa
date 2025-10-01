@@ -28,10 +28,45 @@ button {
   user-select: none;
 }
 .controls {
-  margin: 20px 0;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
 }
+
+.controls .row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.controls button {
+  flex: 1;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+}
+
+.controls input#answer {
+  flex: 1 1 auto;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
 .progress {
   white-space: pre-line;
   margin-top: 20px;
   font-size: 1rem;
 }
+
