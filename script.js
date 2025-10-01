@@ -81,11 +81,22 @@ const appPage = document.getElementById("app");
 function showCard() {
   if (!deck[current]) return;
 
-  if (mode === "picture" && flipped) {
-    cardEl.innerHTML = `<img src="${deck[current].back}" alt="Picture" style="max-width:100%; height:auto;">`;
-  } else {
-    cardEl.textContent = flipped ? deck[current].back : deck[current].front;
-  }
+  let front = deck[current].front;
+  let back = (mode === "picture")
+    ? `<img src="${deck[current].back}" alt="Picture">`
+    : deck[current].back;
+
+  cardEl.innerHTML = `
+    <div class="card-inner">
+      <div class="card-front">${front}</div>
+      <div class="card-back">${back}</div>
+    </div>
+  `;
+
+  // flip event
+  cardEl.onclick = () => {
+    cardEl.classList.toggle("flipped");
+  };
 }
 
 cardEl.addEventListener("click", () => {
@@ -252,3 +263,4 @@ function resetProgress() {
   cards.forEach(c => progress[c.front] = { correct:0, wrong:0 });
   updateProgress();
 }
+
