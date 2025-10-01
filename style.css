@@ -35,11 +35,3 @@ button {
   margin-top: 20px;
   font-size: 1rem;
 }
-.progress-details {
-  display: none; /* hide by default */
-  margin-top: 10px;
-  font-size: 0.9rem;
-  white-space: pre-line;
-  max-height: 200px;
-  overflow-y: auto;
-}
