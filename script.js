@@ -84,7 +84,6 @@ function updateProgress() {
   if (detailsEl) detailsEl.style.display = showDetails ? "block" : "none";
   if (showDetails && detailsEl) detailsEl.textContent = details;
 
-  // Išsaugom į localStorage atskirai pagal kalbą
   localStorage.setItem("progressHiragana", JSON.stringify(progressHiragana));
   localStorage.setItem("progressKatakana", JSON.stringify(progressKatakana));
 }
@@ -130,7 +129,7 @@ function showCard() {
 }
 
 // --- CONTROLS ---
-function setupProgressControls() {
+function setupProgressControls(currentCards) {
   controlsEl.innerHTML = `
     <button id="correct-btn">✅ Correct</button>
     <button id="wrong-btn">❌ Wrong</button>
@@ -143,7 +142,7 @@ function setupProgressControls() {
   document.getElementById("shuffle-btn").addEventListener("click", () => {
     deck = shuffleDeck(deck); current = 0; showCard();
   });
-  document.getElementById("reset-btn").addEventListener("click", resetProgress);
+  document.getElementById("reset-btn").addEventListener("click", () => resetProgress(currentCards));
 }
 
 function setupPictureControls() {
@@ -174,11 +173,11 @@ function setupQuizControls() {
 }
 
 // --- RESET PROGRESS ---
-function resetProgress() {
-  const currentCards = (activeProgress === progressKatakana) ? katakanaCards : cards;
+function resetProgress(currentCards) {
   currentCards.forEach(c => activeProgress[c.front] = { correct:0, wrong:0 });
   updateProgress();
 }
+
 
 // --- MODES ---
 function startMode(selectedMode, scriptType = "hiragana") {
@@ -309,6 +308,7 @@ function goHome() {
   appPage.style.display = "none";
   backToMain();
 }
+
 
 
 
