@@ -175,7 +175,8 @@ function setupQuizControls() {
 
 // --- RESET PROGRESS ---
 function resetProgress() {
-  cards.forEach(c => activeProgress[c.front] = { correct:0, wrong:0 });
+  const currentCards = (activeProgress === progressKatakana) ? katakanaCards : cards;
+  currentCards.forEach(c => activeProgress[c.front] = { correct:0, wrong:0 });
   updateProgress();
 }
 
@@ -308,6 +309,7 @@ function goHome() {
   appPage.style.display = "none";
   backToMain();
 }
+
 
 
 
