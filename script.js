@@ -27,6 +27,7 @@ const katakanaCards = [
 
 // --- PICTURE CARDS ---
 const pictureCards = cards.map(c => ({
+  front: `images/${c.back}.png`,
   front: `images/hiragana/${c.back}.png`,
   back: c.back,
   symbol: c.front
@@ -44,19 +45,10 @@ let current = 0;
 let mode = '';
 let showDetails = false;
 
-// Hiragana progress
-let progressHiragana = JSON.parse(localStorage.getItem("progressHiragana")) || {};
+let progress = JSON.parse(localStorage.getItem("progress")) || {};
 cards.forEach(c => {
-  if (!progressHiragana[c.front]) progressHiragana[c.front] = { correct: 0, wrong: 0 };
+  if (!progress[c.front]) progress[c.front] = { correct: 0, wrong: 0 };
 });
-
-// Katakana progress
-let progressKatakana = JSON.parse(localStorage.getItem("progressKatakana")) || {};
-katakanaCards.forEach(c => {
-  if (!progressKatakana[c.front]) progressKatakana[c.front] = { correct: 0, wrong: 0 };
-});
-
-let activeProgress = progressHiragana;
 
 // --- DOM ELEMENTS ---
 const cardEl = document.getElementById("card");
@@ -69,24 +61,21 @@ function shuffleDeck(d) {
 }
 
 function updateProgress() {
-  if (mode.endsWith("picture")) return; // picture mode neseka progreso
+  if(mode === "picture") return; // picture mode neseka progreso
 
   let totalCorrect = 0, totalWrong = 0;
   let details = '';
-  for (let c of Object.keys(activeProgress)) {
-    totalCorrect += activeProgress[c].correct;
-    totalWrong += activeProgress[c].wrong;
-    details += `${c}: ✅${activeProgress[c].correct} ❌${activeProgress[c].wrong}\n`;
+  for (let c of cards) {
+    totalCorrect += progress[c.front].correct;
+    totalWrong += progress[c.front].wrong;
+    details += `${c.front}: ✅${progress[c.front].correct} ❌${progress[c.front].wrong}\n`;
   }
   document.getElementById("progress-summary").textContent =
     `Total: ✅${totalCorrect} | ❌${totalWrong}`;
   const detailsEl = document.getElementById("progress-details");
-  if (detailsEl) detailsEl.style.display = showDetails ? "block" : "none";
-  if (showDetails && detailsEl) detailsEl.textContent = details;
-
-  // Išsaugom į localStorage atskirai pagal kalbą
-  localStorage.setItem("progressHiragana", JSON.stringify(progressHiragana));
-  localStorage.setItem("progressKatakana", JSON.stringify(progressKatakana));
+  if(detailsEl) detailsEl.style.display = showDetails ? "block" : "none";
+  if(showDetails && detailsEl) detailsEl.textContent = details;
+  localStorage.setItem("progress", JSON.stringify(progress));
 }
 
 function toggleDetails() {
@@ -97,14 +86,14 @@ function toggleDetails() {
 // --- CARD NAVIGATION ---
 function markCorrect() {
   const key = deck[current].symbol || deck[current].front;
-  activeProgress[key].correct++;
+  progress[key].correct++;
   updateProgress();
   nextCard();
 }
 
 function markWrong() {
   const key = deck[current].symbol || deck[current].front;
-  activeProgress[key].wrong++;
+  progress[key].wrong++;
   updateProgress();
   nextCard();
 }
@@ -175,60 +164,34 @@ function setupQuizControls() {
 
 // --- RESET PROGRESS ---
 function resetProgress() {
-  cards.forEach(c => activeProgress[c.front] = { correct:0, wrong:0 });
+  cards.forEach(c => progress[c.front] = { correct:0, wrong:0 });
   updateProgress();
 }
 
 // --- MODES ---
 function startMode(selectedMode) {
-function startMode(selectedMode, scriptType = "hiragana") {
   mode = selectedMode;
-  const isKatakana = mode.startsWith("katakana");
-  activeProgress = isKatakana ? progressKatakana : progressHiragana;
-  current = 0;
-
   titlePage.style.display = "none";
   appPage.style.display = "block";
-  const currentCards = (scriptType === "katakana") ? katakanaCards : cards;
-  const currentPictureCards = (scriptType === "katakana") ? katakanaPictureCards : pictureCards;
 
   current = 0;
-  // Nustatome activeProgress pagal pasirinkimą
-  activeProgress = (scriptType === "katakana") ? progressKatakana : progressHiragana;
 
   switch(mode) {
     case 'learn-all':
       deck = shuffleDeck(cards);
-  // Slėpiame menu
-  document.getElementById("main-menu").style.display = "none";
-  document.getElementById("hiragana-menu").style.display = "none";
-  document.getElementById("katakana-menu").style.display = "none";
-  appPage.style.display = "block";
-
-  // Deck
-  switch (mode) {
-    case "learn-all":
-      deck = shuffleDeck(currentCards);
       setupProgressControls();
       break;
     case 'learn-hard':
-      deck = shuffleDeck(cards.filter(c => activeProgress[c.front].wrong > 0));
+      deck = shuffleDeck(cards.filter(c => progress[c.front].wrong > 0));
       if(deck.length === 0) deck = shuffleDeck(cards);
-    case "learn-hard":
-      deck = shuffleDeck(currentCards.filter(c => activeProgress[c.front]?.wrong > 0));
-      if (deck.length === 0) deck = shuffleDeck(currentCards);
       setupProgressControls();
       break;
     case 'quiz':
       deck = shuffleDeck(cards);
-    case "quiz":
-      deck = shuffleDeck(currentCards);
       setupQuizControls();
       break;
     case 'picture':
       deck = shuffleDeck(pictureCards);
-    case "picture":
-      deck = shuffleDeck(currentPictureCards);
       setupPictureControls();
       break;
   }
@@ -236,7 +199,6 @@ function startMode(selectedMode, scriptType = "hiragana") {
   showCard();
   updateProgress();
 }
-
 
 // --- HOME ---
 function goHome() {
@@ -253,11 +215,11 @@ function checkAnswer() {
 
   const frontKey = deck[current].back || deck[current].front;
   if (userAnswer === correctAnswer) {
-    activeProgress[frontKey].correct++;
+    progress[frontKey].correct++;
     feedback.textContent = "✅ Correct!";
     feedback.style.color = "green";
   } else {
-    activeProgress[frontKey].wrong++;
+    progress[frontKey].wrong++;
     feedback.textContent = `❌ Wrong! Correct: ${correctAnswer}`;
     feedback.style.color = "red";
   }
@@ -301,7 +263,7 @@ function startMode(selectedMode, scriptType = "hiragana") {
       setupProgressControls();
       break;
     case "learn-hard":
-      deck = shuffleDeck(currentCards.filter(c => activeProgress[c.front]?.wrong > 0));
+      deck = shuffleDeck(currentCards.filter(c => progress[c.front]?.wrong > 0));
       if (deck.length === 0) deck = shuffleDeck(currentCards);
       setupProgressControls();
       break;
