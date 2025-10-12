@@ -27,7 +27,13 @@ const katakanaCards = [
 
 // --- PICTURE CARDS ---
 const pictureCards = cards.map(c => ({
-  front: `images/${c.back}.png`,
+  front: `images/hiragana/${c.back}.png`,
+  back: c.back,
+  symbol: c.front
+}));
+
+const katakanaPictureCards = katakanaCards.map(c => ({
+  front: `images/katakana/${c.back}.png`,
   back: c.back,
   symbol: c.front
 }));
@@ -279,4 +285,5 @@ function goHome() {
   appPage.style.display = "none";
   backToMain();
 }
+
 
