@@ -12,6 +12,19 @@ const cards = [
   { front: "わ", back: "wa" }, { front: "を", back: "wo" }, { front: "ん", back: "n" }
 ];
 
+const katakanaCards = [
+  { front: "ア", back: "a" }, { front: "イ", back: "i" }, { front: "ウ", back: "u" }, { front: "エ", back: "e" }, { front: "オ", back: "o" },
+  { front: "カ", back: "ka" }, { front: "キ", back: "ki" }, { front: "ク", back: "ku" }, { front: "ケ", back: "ke" }, { front: "コ", back: "ko" },
+  { front: "サ", back: "sa" }, { front: "シ", back: "shi" }, { front: "ス", back: "su" }, { front: "セ", back: "se" }, { front: "ソ", back: "so" },
+  { front: "タ", back: "ta" }, { front: "チ", back: "chi" }, { front: "ツ", back: "tsu" }, { front: "テ", back: "te" }, { front: "ト", back: "to" },
+  { front: "ナ", back: "na" }, { front: "ニ", back: "ni" }, { front: "ヌ", back: "nu" }, { front: "ネ", back: "ne" }, { front: "ノ", back: "no" },
+  { front: "ハ", back: "ha" }, { front: "ヒ", back: "hi" }, { front: "フ", back: "fu" }, { front: "ヘ", back: "he" }, { front: "ホ", back: "ho" },
+  { front: "マ", back: "ma" }, { front: "ミ", back: "mi" }, { front: "ム", back: "mu" }, { front: "メ", back: "me" }, { front: "モ", back: "mo" },
+  { front: "ヤ", back: "ya" }, { front: "ユ", back: "yu" }, { front: "ヨ", back: "yo" },
+  { front: "ラ", back: "ra" }, { front: "リ", back: "ri" }, { front: "ル", back: "ru" }, { front: "レ", back: "re" }, { front: "ロ", back: "ro" },
+  { front: "ワ", back: "wa" }, { front: "ヲ", back: "wo" }, { front: "ン", back: "n" }
+];
+
 // --- PICTURE CARDS ---
 const pictureCards = cards.map(c => ({
   front: `images/${c.back}.png`,
@@ -33,7 +46,6 @@ cards.forEach(c => {
 // --- DOM ELEMENTS ---
 const cardEl = document.getElementById("card");
 const controlsEl = document.getElementById("controls");
-const titlePage = document.getElementById("title-page");
 const appPage = document.getElementById("app");
 
 // --- UTILITIES ---
@@ -212,3 +224,59 @@ function checkAnswer() {
     nextCard();
   }, 1000);
 }
+
+// --- NEW MENU LOGIC (for Hiragana / Katakana) ---
+function openSubmenu(type) {
+  document.getElementById("main-menu").style.display = "none";
+  document.getElementById(type + "-menu").style.display = "block";
+}
+
+function backToMain() {
+  document.getElementById("hiragana-menu").style.display = "none";
+  document.getElementById("katakana-menu").style.display = "none";
+  document.getElementById("main-menu").style.display = "block";
+}
+
+// Patobulinta startMode, kuri žino, kuri sistema (hiragana/katakana)
+function startMode(selectedMode, scriptType = "hiragana") {
+  mode = selectedMode;
+  current = 0;
+
+  document.getElementById("main-menu").style.display = "none";
+  document.getElementById("hiragana-menu").style.display = "none";
+  document.getElementById("katakana-menu").style.display = "none";
+  appPage.style.display = "block";
+
+  const currentCards = (scriptType === "katakana") ? katakanaCards : cards;
+  const currentPictureCards = (scriptType === "katakana") ? katakanaPictureCards : pictureCards;
+
+  switch (mode) {
+    case "learn-all":
+      deck = shuffleDeck(currentCards);
+      setupProgressControls();
+      break;
+    case "learn-hard":
+      deck = shuffleDeck(currentCards.filter(c => progress[c.front]?.wrong > 0));
+      if (deck.length === 0) deck = shuffleDeck(currentCards);
+      setupProgressControls();
+      break;
+    case "quiz":
+      deck = shuffleDeck(currentCards);
+      setupQuizControls();
+      break;
+    case "picture":
+      deck = shuffleDeck(currentPictureCards);
+      setupPictureControls();
+      break;
+  }
+
+  showCard();
+  updateProgress();
+}
+
+// --- HOME (now goes to main menu) ---
+function goHome() {
+  appPage.style.display = "none";
+  backToMain();
+}
+
