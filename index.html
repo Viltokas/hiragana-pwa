@@ -1,41 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Japanese Study App</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hiragana Study App</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <!-- MAIN MENU -->
 <div id="main-menu">
   <h1>Japanese Study App</h1>
-  <button onclick="openSubmenu('hiragana')">🎴 Learn Hiragana</button>
-  <button onclick="openSubmenu('katakana')">💠 Learn Katakana</button>
+  <button onclick="openSubmenu('hiragana')">🎌 Learn Hiragana</button>
+  <button onclick="openSubmenu('katakana')">🈹 Learn Katakana</button>
 </div>
 
 <!-- HIRAGANA SUBMENU -->
 <div id="hiragana-menu" style="display:none;">
-  <h2>Hiragana</h2>
-  <button onclick="startMode('learn-all', 'hiragana')">📖 Learn All</button>
-  <button onclick="startMode('learn-hard', 'hiragana')">🔥 Learn Difficult</button>
+  <h2>Learn Hiragana</h2>
+  <button onclick="startMode('learn-all', 'hiragana')">📖 Learn All Characters</button>
+  <button onclick="startMode('learn-hard', 'hiragana')">🔥 Learn Difficult Characters</button>
   <button onclick="startMode('quiz', 'hiragana')">❓ Quiz Mode</button>
   <button onclick="startMode('picture', 'hiragana')">🖼️ Learn with Pictures</button>
   <button onclick="backToMain()">⬅️ Back</button>
 </div>
+<!-- Hiragana menu -->
+<button onclick="startMode('learn-all', 'hiragana')">📖 Learn All Characters</button>
+<button onclick="startMode('learn-hard', 'hiragana')">🔥 Learn Difficult Characters</button>
+<button onclick="startMode('quiz', 'hiragana')">❓ Quiz Mode</button>
+<button onclick="startMode('picture', 'hiragana')">🖼️ Learn with Pictures</button>
 
 <!-- KATAKANA SUBMENU -->
 <div id="katakana-menu" style="display:none;">
-  <h2>Katakana</h2>
-  <button onclick="startMode('learn-all', 'katakana')">📖 Learn All</button>
-  <button onclick="startMode('learn-hard', 'katakana')">🔥 Learn Difficult</button>
+  <h2>Learn Katakana</h2>
+  <button onclick="startMode('learn-all', 'katakana')">📖 Learn All Characters</button>
+  <button onclick="startMode('learn-hard', 'katakana')">🔥 Learn Difficult Characters</button>
   <button onclick="startMode('quiz', 'katakana')">❓ Quiz Mode</button>
   <button onclick="startMode('picture', 'katakana')">🖼️ Learn with Pictures</button>
   <button onclick="backToMain()">⬅️ Back</button>
 </div>
+<!-- Katakana menu -->
+<button onclick="startMode('learn-all', 'katakana')">📖 Learn All Characters</button>
+<button onclick="startMode('learn-hard', 'katakana')">🔥 Learn Difficult Characters</button>
+<button onclick="startMode('quiz', 'katakana')">❓ Quiz Mode</button>
+<button onclick="startMode('picture', 'katakana')">🖼️ Learn with Pictures</button>
 
-<!-- APP -->
+<!-- APP PAGE -->
 <div id="app" style="display:none;">
   <div id="card" class="card"></div>
   <div class="controls" id="controls"></div>
@@ -46,5 +57,11 @@
 </div>
 
 <script src="script.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js');
+  }
+</script>
 </body>
+
 </html>
