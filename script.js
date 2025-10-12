@@ -27,6 +27,7 @@ const katakanaCards = [
 
 // --- PICTURE CARDS ---
 const pictureCards = cards.map(c => ({
+  front: `images/${c.back}.png`,
   front: `images/hiragana/${c.back}.png`,
   back: c.back,
   symbol: c.front
@@ -45,20 +46,9 @@ let mode = '';
 let showDetails = false;
 
 let progress = JSON.parse(localStorage.getItem("progress")) || {};
-// Hiragana progress
-let progressHiragana = JSON.parse(localStorage.getItem("progressHiragana")) || {};
 cards.forEach(c => {
   if (!progress[c.front]) progress[c.front] = { correct: 0, wrong: 0 };
-  if (!progressHiragana[c.front]) progressHiragana[c.front] = { correct: 0, wrong: 0 };
 });
-
-// Katakana progress
-let progressKatakana = JSON.parse(localStorage.getItem("progressKatakana")) || {};
-katakanaCards.forEach(c => {
-  if (!progressKatakana[c.front]) progressKatakana[c.front] = { correct: 0, wrong: 0 };
-});
-
-let activeProgress = progressHiragana;
 
 // --- DOM ELEMENTS ---
 const cardEl = document.getElementById("card");
@@ -72,7 +62,6 @@ function shuffleDeck(d) {
 
 function updateProgress() {
   if(mode === "picture") return; // picture mode neseka progreso
-  if (mode.endsWith("picture")) return; // picture mode neseka progreso
 
   let totalCorrect = 0, totalWrong = 0;
   let details = '';
@@ -80,10 +69,6 @@ function updateProgress() {
     totalCorrect += progress[c.front].correct;
     totalWrong += progress[c.front].wrong;
     details += `${c.front}: ✅${progress[c.front].correct} ❌${progress[c.front].wrong}\n`;
-  for (let c of Object.keys(activeProgress)) {
-    totalCorrect += activeProgress[c].correct;
-    totalWrong += activeProgress[c].wrong;
-    details += `${c}: ✅${activeProgress[c].correct} ❌${activeProgress[c].wrong}\n`;
   }
   document.getElementById("progress-summary").textContent =
     `Total: ✅${totalCorrect} | ❌${totalWrong}`;
@@ -91,12 +76,6 @@ function updateProgress() {
   if(detailsEl) detailsEl.style.display = showDetails ? "block" : "none";
   if(showDetails && detailsEl) detailsEl.textContent = details;
   localStorage.setItem("progress", JSON.stringify(progress));
-  if (detailsEl) detailsEl.style.display = showDetails ? "block" : "none";
-  if (showDetails && detailsEl) detailsEl.textContent = details;
-
-  // Išsaugom į localStorage atskirai pagal kalbą
-  localStorage.setItem("progressHiragana", JSON.stringify(progressHiragana));
-  localStorage.setItem("progressKatakana", JSON.stringify(progressKatakana));
 }
 
 function toggleDetails() {
@@ -108,7 +87,6 @@ function toggleDetails() {
 function markCorrect() {
   const key = deck[current].symbol || deck[current].front;
   progress[key].correct++;
-  activeProgress[key].correct++;
   updateProgress();
   nextCard();
 }
@@ -116,7 +94,6 @@ function markCorrect() {
 function markWrong() {
   const key = deck[current].symbol || deck[current].front;
   progress[key].wrong++;
-  activeProgress[key].wrong++;
   updateProgress();
   nextCard();
 }
@@ -188,16 +165,12 @@ function setupQuizControls() {
 // --- RESET PROGRESS ---
 function resetProgress() {
   cards.forEach(c => progress[c.front] = { correct:0, wrong:0 });
-  cards.forEach(c => activeProgress[c.front] = { correct:0, wrong:0 });
   updateProgress();
 }
 
 // --- MODES ---
 function startMode(selectedMode) {
   mode = selectedMode;
-  const isKatakana = mode.startsWith("katakana");
-  activeProgress = isKatakana ? progressKatakana : progressHiragana;
-
   titlePage.style.display = "none";
   appPage.style.display = "block";
 
@@ -210,7 +183,6 @@ function startMode(selectedMode) {
       break;
     case 'learn-hard':
       deck = shuffleDeck(cards.filter(c => progress[c.front].wrong > 0));
-      deck = shuffleDeck(cards.filter(c => activeProgress[c.front].wrong > 0));
       if(deck.length === 0) deck = shuffleDeck(cards);
       setupProgressControls();
       break;
@@ -244,12 +216,10 @@ function checkAnswer() {
   const frontKey = deck[current].back || deck[current].front;
   if (userAnswer === correctAnswer) {
     progress[frontKey].correct++;
-    activeProgress[frontKey].correct++;
     feedback.textContent = "✅ Correct!";
     feedback.style.color = "green";
   } else {
     progress[frontKey].wrong++;
-    activeProgress[frontKey].wrong++;
     feedback.textContent = `❌ Wrong! Correct: ${correctAnswer}`;
     feedback.style.color = "red";
   }
@@ -294,7 +264,6 @@ function startMode(selectedMode, scriptType = "hiragana") {
       break;
     case "learn-hard":
       deck = shuffleDeck(currentCards.filter(c => progress[c.front]?.wrong > 0));
-      deck = shuffleDeck(currentCards.filter(c => activeProgress[c.front]?.wrong > 0));
       if (deck.length === 0) deck = shuffleDeck(currentCards);
       setupProgressControls();
       break;
