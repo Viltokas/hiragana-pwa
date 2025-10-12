@@ -1,26 +1,38 @@
-<!-- MAIN MENU -->
+<body>
+
+<!-- PAGRINDINIS MENIU -->
 <div id="main-menu">
-  <h1>Japanese Kana Study</h1>
-  <button onclick="openSubmenu('hiragana')">Learn Hiragana</button>
-  <button onclick="openSubmenu('katakana')">Learn Katakana</button>
+  <h1>Japanese Study App</h1>
+  <button onclick="openSubmenu('hiragana')">🎴 Learn Hiragana</button>
+  <button onclick="openSubmenu('katakana')">💠 Learn Katakana</button>
 </div>
 
-<!-- HIRAGANA MENU -->
+<!-- HIRAGANA MENIU -->
 <div id="hiragana-menu" style="display:none;">
   <h2>Hiragana</h2>
-  <button onclick="startMode('learn-all','hiragana')">📖 Learn All</button>
-  <button onclick="startMode('learn-hard','hiragana')">🔥 Difficult</button>
-  <button onclick="startMode('quiz','hiragana')">❓ Quiz</button>
-  <button onclick="startMode('picture','hiragana')">🖼️ With Pictures</button>
+  <button onclick="startMode('learn-all', 'hiragana')">📖 Learn All</button>
+  <button onclick="startMode('learn-hard', 'hiragana')">🔥 Learn Difficult</button>
+  <button onclick="startMode('quiz', 'hiragana')">❓ Quiz Mode</button>
+  <button onclick="startMode('picture', 'hiragana')">🖼️ Learn with Pictures</button>
   <button onclick="backToMain()">⬅️ Back</button>
 </div>
 
-<!-- KATAKANA MENU -->
+<!-- KATAKANA MENIU -->
 <div id="katakana-menu" style="display:none;">
   <h2>Katakana</h2>
-  <button onclick="startMode('learn-all','katakana')">📖 Learn All</button>
-  <button onclick="startMode('learn-hard','katakana')">🔥 Difficult</button>
-  <button onclick="startMode('quiz','katakana')">❓ Quiz</button>
-  <button onclick="startMode('picture','katakana')">🖼️ With Pictures</button>
+  <button onclick="startMode('learn-all', 'katakana')">📖 Learn All</button>
+  <button onclick="startMode('learn-hard', 'katakana')">🔥 Learn Difficult</button>
+  <button onclick="startMode('quiz', 'katakana')">❓ Quiz Mode</button>
+  <button onclick="startMode('picture', 'katakana')">🖼️ Learn with Pictures</button>
   <button onclick="backToMain()">⬅️ Back</button>
 </div>
+
+<!-- APP PAGE -->
+<div id="app" style="display:none;">
+  <div id="card" class="card"></div>
+  <div class="controls" id="controls"></div>
+  <div class="progress" id="progress-summary"></div>
+  <div id="progress-details" style="display:none; white-space:pre;"></div>
+  <button onclick="toggleDetails()">📊 Show details</button>
+  <button onclick="goHome()">🏠 Home</button>
+<
