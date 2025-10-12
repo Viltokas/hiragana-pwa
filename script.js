@@ -180,32 +180,39 @@ function resetProgress() {
 }
 
 // --- MODES ---
-function startMode(selectedMode) {
+function startMode(selectedMode, scriptType = "hiragana") {
   mode = selectedMode;
-  const isKatakana = mode.startsWith("katakana");
-  activeProgress = isKatakana ? progressKatakana : progressHiragana;
-
-  titlePage.style.display = "none";
-  appPage.style.display = "block";
-
   current = 0;
 
-  switch(mode) {
-    case 'learn-all':
-      deck = shuffleDeck(cards);
+  const currentCards = (scriptType === "katakana") ? katakanaCards : cards;
+  const currentPictureCards = (scriptType === "katakana") ? katakanaPictureCards : pictureCards;
+
+  // Nustatome activeProgress pagal pasirinkimą
+  activeProgress = (scriptType === "katakana") ? progressKatakana : progressHiragana;
+
+  // Slėpiame menu
+  document.getElementById("main-menu").style.display = "none";
+  document.getElementById("hiragana-menu").style.display = "none";
+  document.getElementById("katakana-menu").style.display = "none";
+  appPage.style.display = "block";
+
+  // Deck
+  switch (mode) {
+    case "learn-all":
+      deck = shuffleDeck(currentCards);
       setupProgressControls();
       break;
-    case 'learn-hard':
-      deck = shuffleDeck(cards.filter(c => activeProgress[c.front].wrong > 0));
-      if(deck.length === 0) deck = shuffleDeck(cards);
+    case "learn-hard":
+      deck = shuffleDeck(currentCards.filter(c => activeProgress[c.front]?.wrong > 0));
+      if (deck.length === 0) deck = shuffleDeck(currentCards);
       setupProgressControls();
       break;
-    case 'quiz':
-      deck = shuffleDeck(cards);
+    case "quiz":
+      deck = shuffleDeck(currentCards);
       setupQuizControls();
       break;
-    case 'picture':
-      deck = shuffleDeck(pictureCards);
+    case "picture":
+      deck = shuffleDeck(currentPictureCards);
       setupPictureControls();
       break;
   }
@@ -213,6 +220,7 @@ function startMode(selectedMode) {
   showCard();
   updateProgress();
 }
+
 
 // --- HOME ---
 function goHome() {
@@ -300,6 +308,7 @@ function goHome() {
   appPage.style.display = "none";
   backToMain();
 }
+
 
 
 
