@@ -9,13 +9,31 @@
 </head>
 <body>
 
-<!-- TITLE / MENU PAGE -->
-<div id="title-page">
-  <h1>Hiragana Study App</h1>
-  <button onclick="startMode('learn-all')">📖 Learn All Characters</button>
-  <button onclick="startMode('learn-hard')">🔥 Learn Difficult Characters</button>
-  <button onclick="startMode('quiz')">❓ Quiz Mode</button>
-  <button onclick="startMode('picture')">🖼️ Learn with Pictures</button>
+<!-- MAIN MENU -->
+<div id="main-menu">
+  <h1>Japanese Study App</h1>
+  <button onclick="openSubmenu('hiragana')">🎌 Learn Hiragana</button>
+  <button onclick="openSubmenu('katakana')">🈹 Learn Katakana</button>
+</div>
+
+<!-- HIRAGANA SUBMENU -->
+<div id="hiragana-menu" style="display:none;">
+  <h2>Learn Hiragana</h2>
+  <button onclick="startMode('learn-all', 'hiragana')">📖 Learn All Characters</button>
+  <button onclick="startMode('learn-hard', 'hiragana')">🔥 Learn Difficult Characters</button>
+  <button onclick="startMode('quiz', 'hiragana')">❓ Quiz Mode</button>
+  <button onclick="startMode('picture', 'hiragana')">🖼️ Learn with Pictures</button>
+  <button onclick="backToMain()">⬅️ Back</button>
+</div>
+
+<!-- KATAKANA SUBMENU -->
+<div id="katakana-menu" style="display:none;">
+  <h2>Learn Katakana</h2>
+  <button onclick="startMode('learn-all', 'katakana')">📖 Learn All Characters</button>
+  <button onclick="startMode('learn-hard', 'katakana')">🔥 Learn Difficult Characters</button>
+  <button onclick="startMode('quiz', 'katakana')">❓ Quiz Mode</button>
+  <button onclick="startMode('picture', 'katakana')">🖼️ Learn with Pictures</button>
+  <button onclick="backToMain()">⬅️ Back</button>
 </div>
 
 <!-- APP PAGE -->
@@ -35,4 +53,6 @@
   }
 </script>
 </body>
+
 </html>
+
